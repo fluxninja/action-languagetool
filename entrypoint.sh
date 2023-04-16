@@ -1,12 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
-API_ENDPOINT="${INPUT_CUSTOM_API_ENDPOINT}"
-if [ -z "${INPUT_CUSTOM_API_ENDPOINT}" ]; then
-	API_ENDPOINT=http://localhost:8010
-	java -cp "/LanguageTool/languagetool-server.jar" org.languagetool.server.HTTPServer --port 8010 &
-	sleep 3 # Wait the server statup.
-fi
+API_ENDPOINT="${INPUT_API_ENDPOINT}"
 
 echo "API ENDPOINT: ${API_ENDPOINT}" >&2
 
@@ -79,8 +74,7 @@ set +o noglob
 run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
-		TEXT_JSON=$(markup_to_json "$(cat "${FILE}")")
-		echo "TEXT_JSON: ${TEXT_JSON}" >&2
+		TEXT_JSON=$(node annotate.js "${FILE}")
 		curl --silent \
 			--request POST \
 			--data "${DATA}" \
@@ -88,34 +82,6 @@ run_langtool() {
 			"${API_ENDPOINT}/v2/check" |
 			FILE="${FILE}" tmpl /langtool.tmpl
 	done
-}
-
-markup_to_json() {
-	local text_with_markup="$1"
-	local markup_regex='<[^>]+>'
-
-	# Initialize the JSON array
-	local json_text="$(jq -n '[]')"
-
-	while [[ ${text_with_markup} =~ ${markup_regex} ]]; do
-		local markup="${BASH_REMATCH[0]}"
-		local text_part="${text_with_markup%%"${markup}"*}"
-		text_with_markup="${text_with_markup#*"${markup}"}"
-
-		# Add the text part to the JSON array
-		json_text="$(jq --arg text "${text_part}" '. += [{"text": $text}]' <<<"${json_text}")"
-
-		# Add the markup part to the JSON array
-		json_text="$(jq --arg markup "${markup}" '. += [{"markup": $markup}]' <<<"${json_text}")"
-	done
-
-	# Add the remaining text part (if any) to the JSON array
-	if [[ -n ${text_with_markup} ]]; then
-		json_text="$(jq --arg text "${text_with_markup}" '. += [{"text": $text}]' <<<"${json_text}")"
-	fi
-
-	# Output the final JSON
-	echo "${json_text}"
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"

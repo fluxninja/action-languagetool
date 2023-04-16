@@ -1,6 +1,6 @@
 name: "Run LanguageTool with reviewdog"
 description: "🐶 Run LanguageTool with reviewdog on pull requests to improve code review experience."
-author: "haya14busa"
+author: "FluxNinja"
 inputs:
   github_token:
     description: "GITHUB_TOKEN"
@@ -34,9 +34,9 @@ inputs:
   enabled_only:
     description: "enabledOnly of LanguageTool"
     default: "false"
-  custom_api_endpoint:
-    description: "Custom API endpoint of LanguageTool server. e.g. https://languagetool.org/api"
-    default: ""
+  api_endpoint:
+    description: "API endpoint of LanguageTool server. e.g. https://languagetool.org/api"
+    default: "https://languagetool.org/api"
   username:
     description: "Username"
     default: ""
@@ -53,7 +53,6 @@ runs:
   using: "docker"
   image: "Dockerfile"
 
-# Ref: https://haya14busa.github.io/github-action-brandings/
 branding:
   icon: "type"
-  color: "blue"
+  color: "orange"
