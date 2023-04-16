@@ -39,6 +39,9 @@ fi
 if [ -n "${INPUT_API_KEY}" ]; then
 	DATA="$DATA&apiKey=${INPUT_API_KEY}"
 fi
+if [ "${INPUT_PICKY}" = "true" ]; then
+	DATA="$DATA&level=picky"
+fi
 
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob

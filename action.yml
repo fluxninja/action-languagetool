@@ -43,6 +43,9 @@ inputs:
   api_key:
     description: "API Key"
     default: ""
+  picky:
+    description: "Picky mode"
+    default: "false"
 runs:
   using: "docker"
   image: "Dockerfile"
