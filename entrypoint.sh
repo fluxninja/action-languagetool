@@ -36,7 +36,7 @@ fi
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob
 
-if [ "${INPUT_FILTER_MODE}" = "changed" ]; then
+if [ "${INPUT_FILTER_FILES}" = "changed" ]; then
 	PR_NUMBER=$(echo "${GITHUB_REF}" | awk -F / '{print $3}')
 	PAGE=1
 	FILES=""
@@ -120,4 +120,5 @@ echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%A%f:%l:%c: %m" \
 	-efm="%C %m" \
 	-name="LanguageTool" \
 	-reporter="${INPUT_REPORTER:-github-pr-review}" \
-	-level="${INPUT_LEVEL}"
+	-level="${INPUT_LEVEL}" \
+	-filter-mode="${INPUT_FILTER_MODE}"

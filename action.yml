@@ -12,11 +12,14 @@ inputs:
   reporter:
     description: "Reporter of reviewdog command [github-pr-check,github-pr-review]."
     default: "github-pr-review"
+  filter_mode:
+    description: "filter mode for reviewdog"
+    default: "file"
   ### Flags for target file ###
   patterns:
     description: "Space separated target file glob patterns. https://github.com/haya14busa/ghglob"
     default: "**/*.md **/*.txt"
-  filter_mode:
+  filter_files:
     description: "changed or all"
     default: "changed"
   ### Flags for LanguageTool ###
