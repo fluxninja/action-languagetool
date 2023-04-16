@@ -9,29 +9,30 @@ fi
 
 git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-# https://languagetool.org/http-api/swagger-ui/#!/default/post_check
-DATA="language=${INPUT_LANGUAGE}"
+# Create a JSON object with the required parameters
+JSON_DATA="{\"language\": \"${INPUT_LANGUAGE}\""
 if [ -n "${INPUT_ENABLED_RULES}" ]; then
-	DATA="$DATA&enabledRules=${INPUT_ENABLED_RULES}"
+	JSON_DATA="$JSON_DATA, \"enabledRules\": \"${INPUT_ENABLED_RULES}\""
 fi
 if [ -n "${INPUT_DISABLED_RULES}" ]; then
-	DATA="$DATA&disabledRules=${INPUT_DISABLED_RULES}"
+	JSON_DATA="$JSON_DATA, \"disabledRules\": \"${INPUT_DISABLED_RULES}\""
 fi
 if [ -n "${INPUT_ENABLED_CATEGORIES}" ]; then
-	DATA="$DATA&enabledCategories=${INPUT_ENABLED_CATEGORIES}"
+	JSON_DATA="$JSON_DATA, \"enabledCategories\": \"${INPUT_ENABLED_CATEGORIES}\""
 fi
 if [ -n "${INPUT_DISABLED_CATEGORIES}" ]; then
-	DATA="$DATA&disabledCategories=${INPUT_DISABLED_CATEGORIES}"
+	JSON_DATA="$JSON_DATA, \"disabledCategories\": \"${INPUT_DISABLED_CATEGORIES}\""
 fi
 if [ -n "${INPUT_ENABLED_ONLY}" ]; then
-	DATA="$DATA&enabledOnly=${INPUT_ENABLED_ONLY}"
+	JSON_DATA="$JSON_DATA, \"enabledOnly\": \"${INPUT_ENABLED_ONLY}\""
 fi
 if [ -n "${INPUT_USERNAME}" ]; then
-	DATA="$DATA&username=${INPUT_USERNAME}"
+	JSON_DATA="$JSON_DATA, \"username\": \"${INPUT_USERNAME}\""
 fi
 if [ -n "${INPUT_API_KEY}" ]; then
-	DATA="$DATA&apiKey=${INPUT_API_KEY}"
+	JSON_DATA="$JSON_DATA, \"apiKey\": \"${INPUT_API_KEY}\""
 fi
+JSON_DATA="$JSON_DATA}"
 
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob
@@ -64,10 +65,11 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
-		DATA="$DATA&data=${DATA_JSON}"
+		JSON_DATA_WITH_FILE="$(echo "${JSON_DATA}" | jq ". + {\"data\": ${DATA_JSON}}")"
 		response=$(curl --silent \
 			--request POST \
-			--data "${DATA}" \
+			--header "Content-Type: application/json" \
+			--data "${JSON_DATA_WITH_FILE}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 
 		echo "${response}"
