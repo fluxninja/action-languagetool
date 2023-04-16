@@ -82,7 +82,7 @@ run_langtool() {
 		TEXT_JSON=$(markup_to_json "$(cat "${FILE}")")
 		echo "TEXT_JSON: ${TEXT_JSON}" >&2
 		DATA="data=${TEXT_JSON}"
-		curl --silent \
+		curl \
 			--request POST \
 			--data "${DATA}" \
 			"${API_ENDPOINT}/v2/check" |
