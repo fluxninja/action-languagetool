@@ -76,7 +76,6 @@ urlencode() {
 
 run_langtool() {
 	for FILE in ${FILES}; do
-		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
 		ENCODED_DATA_JSON=$(urlencode "${DATA_JSON}")
 		DATA_FOR_FILE="${DATA}&data=${ENCODED_DATA_JSON}"
@@ -85,24 +84,16 @@ run_langtool() {
 			--data "${DATA_FOR_FILE}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 
-		# print response
-		echo "Response: ${RESPONSE_JSON}"
-
-		# Save the response to a temporary file
-		echo "${RESPONSE_JSON}" >response.json
-
 		# Pass the file path to tmpl
 		PARSED_RESPONSE=$(echo "${RESPONSE_JSON}" | FILE="${FILE}" tmpl /langtool.tmpl)
 
-		echo "Parsed: ${PARSED_RESPONSE}"
-
 		# Remove the temporary file
 		rm response.json
+
+		echo "${PARSED_RESPONSE}"
 	done
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
 
-run_langtool
-
-# run_langtool | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
+run_langtool | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
