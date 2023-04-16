@@ -41,6 +41,6 @@ jobs:
           level: info
           patterns: "**.md"
           custom_api_endpoint: ${{ secrets.LANGTOOL_HTTP_URI }}
-          username: ${{ secrets.LANGTOOL_USERNAME }}
-          api_key: ${{ secrets.LANGTOOL_API_KEY }}
+          username: "zozo"
+          api_key: "zozo"
           picky: true
