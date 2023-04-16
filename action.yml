@@ -16,6 +16,9 @@ inputs:
   patterns:
     description: "Space separated target file glob patterns. https://github.com/haya14busa/ghglob"
     default: "**/*.md **/*.txt"
+  filter_mode:
+    description: "changed or all"
+    default: "changed"
   ### Flags for LanguageTool ###
   # Ref: https://languagetool.org/http-api/swagger-ui/#!/default/post_check
   language:
@@ -43,9 +46,6 @@ inputs:
   api_key:
     description: "API Key"
     default: ""
-  filter_mode:
-    description: "changed or all"
-    default: "changed"
 runs:
   using: "docker"
   image: "Dockerfile"

@@ -119,5 +119,5 @@ echo "LANGTOOL_RESPONSE: ${LANGTOOL_RESPONSE}"
 echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%A%f:%l:%c: %m" \
 	-efm="%C %m" \
 	-name="LanguageTool" \
-	-reporter="${INPUT_REPORTER:-github-pr-check}" \
+	-reporter="${INPUT_REPORTER:-github-pr-review}" \
 	-level="${INPUT_LEVEL}"
