@@ -105,9 +105,11 @@ markup_to_json() {
 	if [[ -n $CONTENT ]]; then
 		JSON_ARRAY=$(jq --arg text "$CONTENT" '. += [{"text": $text}]' <<<"${JSON_ARRAY}")
 	fi
+
 	# Create JSON data for the request
 	OUT=$(jq --argjson annotation "${JSON_ARRAY}" '{"annotation": $annotation}' <<<"{}")
 	echo "${OUT}"
+
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
