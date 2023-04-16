@@ -9,30 +9,29 @@ fi
 
 git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-# Create a JSON object with the required parameters
-JSON_DATA="{\"language\": \"${INPUT_LANGUAGE}\""
+# https://languagetool.org/http-api/swagger-ui/#!/default/post_check
+DATA="language=${INPUT_LANGUAGE}"
 if [ -n "${INPUT_ENABLED_RULES}" ]; then
-	JSON_DATA="$JSON_DATA, \"enabledRules\": \"${INPUT_ENABLED_RULES}\""
+	DATA="$DATA&enabledRules=${INPUT_ENABLED_RULES}"
 fi
 if [ -n "${INPUT_DISABLED_RULES}" ]; then
-	JSON_DATA="$JSON_DATA, \"disabledRules\": \"${INPUT_DISABLED_RULES}\""
+	DATA="$DATA&disabledRules=${INPUT_DISABLED_RULES}"
 fi
 if [ -n "${INPUT_ENABLED_CATEGORIES}" ]; then
-	JSON_DATA="$JSON_DATA, \"enabledCategories\": \"${INPUT_ENABLED_CATEGORIES}\""
+	DATA="$DATA&enabledCategories=${INPUT_ENABLED_CATEGORIES}"
 fi
 if [ -n "${INPUT_DISABLED_CATEGORIES}" ]; then
-	JSON_DATA="$JSON_DATA, \"disabledCategories\": \"${INPUT_DISABLED_CATEGORIES}\""
+	DATA="$DATA&disabledCategories=${INPUT_DISABLED_CATEGORIES}"
 fi
 if [ -n "${INPUT_ENABLED_ONLY}" ]; then
-	JSON_DATA="$JSON_DATA, \"enabledOnly\": \"${INPUT_ENABLED_ONLY}\""
+	DATA="$DATA&enabledOnly=${INPUT_ENABLED_ONLY}"
 fi
 if [ -n "${INPUT_USERNAME}" ]; then
-	JSON_DATA="$JSON_DATA, \"username\": \"${INPUT_USERNAME}\""
+	DATA="$DATA&username=${INPUT_USERNAME}"
 fi
 if [ -n "${INPUT_API_KEY}" ]; then
-	JSON_DATA="$JSON_DATA, \"apiKey\": \"${INPUT_API_KEY}\""
+	DATA="$DATA&apiKey=${INPUT_API_KEY}"
 fi
-JSON_DATA="$JSON_DATA}"
 
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob
@@ -65,15 +64,12 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
-		JSON_DATA_WITH_FILE="$(echo "${JSON_DATA}" | jq ". + {\"data\": ${DATA_JSON}}")"
-		echo "Encoded: ${JSON_DATA_WITH_FILE}"
+		DATA="${DATA}&data=${DATA_JSON}"
 		response=$(curl --silent \
 			--request POST \
-			--header "Content-Type: application/json" \
-			--data "${JSON_DATA_WITH_FILE}" \
+			--data "${DATA}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
-
-		echo "Response: ${response}"
+		echo "${response}"
 
 		# curl --silent \
 		# 	--request POST \
