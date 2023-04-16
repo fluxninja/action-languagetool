@@ -74,27 +74,11 @@ urlencode() {
 	echo "${output}"
 }
 
-urlencode() {
-	local input="$1"
-	local output=""
-	local len="${#input}"
-	for ((i = 0; i < len; i++)); do
-		char="${input:$i:1}"
-		if [[ "${char}" =~ [a-zA-Z0-9\.\~\_\-] ]]; then
-			output+="${char}"
-		else
-			printf -v hex_char "%02X" "'${char}"
-			output+="%${hex_char}"
-		fi
-	done
-	echo "${output}"
-}
-
 run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
-		ENCODED_DATA_JSON=$(echo "${DATA_JSON}" | urlencode)
+		ENCODED_DATA_JSON=$(urlencode "${DATA_JSON}")
 		DATA_FOR_FILE="${DATA}&data=${ENCODED_DATA_JSON}"
 		response=$(curl --silent \
 			--request POST \
