@@ -39,13 +39,16 @@ fi
 if [ -n "${INPUT_API_KEY}" ]; then
 	DATA="$DATA&apiKey=${INPUT_API_KEY}"
 fi
-if [ "${INPUT_PICKY}" = "true" ]; then
-	DATA="$DATA&level=picky"
-fi
 
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob
-FILES="$(git ls-files | ghglob "${INPUT_PATTERNS}")"
+
+if [ "${INPUT_FILTER_MODE}" = "changed" ]; then
+	FILES="$(git diff --name-only --diff-filter=d origin/main | ghglob "${INPUT_PATTERNS}")"
+else
+	FILES="$(git ls-files | ghglob "${INPUT_PATTERNS}")"
+fi
+
 set +o noglob
 
 run_langtool() {
