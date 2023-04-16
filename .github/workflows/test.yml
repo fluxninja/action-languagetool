@@ -40,6 +40,4 @@ jobs:
           reporter: github-pr-review
           level: info
           patterns: "**.md"
-          custom_api_endpoint: ${{ secrets.LANGTOOL_HTTP_URI }}
-          username: ${{ secrets.LANGTOOL_USERNAME }}
-          api_key: ${{ secrets.LANGTOOL_API_KEY }}
+          custom_api_endpoint: https://languagetool.org/api
