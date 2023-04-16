@@ -44,7 +44,11 @@ fi
 set -o noglob
 
 if [ "${INPUT_FILTER_MODE}" = "changed" ]; then
-	FILES="$(git diff --name-only --diff-filter=d origin/main | ghglob "${INPUT_PATTERNS}")"
+	PR_NUMBER=$(echo "${GITHUB_REF}" | awk -F / '{print $3}')
+	FILES="$(curl --silent -H "Authorization: token ${INPUT_GITHUB_TOKEN}" \
+		"https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" |
+		jq -r '.[] | select(.status != "deleted") | .filename' |
+		ghglob "${INPUT_PATTERNS}")"
 else
 	FILES="$(git ls-files | ghglob "${INPUT_PATTERNS}")"
 fi
