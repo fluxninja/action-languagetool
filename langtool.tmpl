@@ -1,4 +1,4 @@
-{{- $result := (json.Unmarshal (input.Content)).value -}}
+{{- $result := . -}}
 
 {{ range $_, $m := .matches -}}
   {{- /* <file>:<line>:<col>: <message><rule> */ -}}

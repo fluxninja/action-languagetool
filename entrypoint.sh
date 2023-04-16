@@ -92,7 +92,7 @@ run_langtool() {
 		echo "${RESPONSE_JSON}" >response.json
 
 		# Pass the file path to tmpl
-		PARSED_RESPONSE=$(FILE="${FILE}" tmpl /langtool.tmpl -i response.json)
+		PARSED_RESPONSE=$(echo "${RESPONSE_JSON}" | FILE="${FILE}" tmpl /langtool.tmpl)
 
 		echo "Parsed: ${PARSED_RESPONSE}"
 
