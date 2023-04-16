@@ -64,10 +64,10 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
+		DATA="$DATA&data=${DATA_JSON}"
 		curl --silent \
 			--request POST \
 			--data "${DATA}" \
-			--data-urlencode "data=${DATA_JSON})" \
 			"${INPUT_API_ENDPOINT}/v2/check" |
 			FILE="${FILE}" tmpl /langtool.tmpl
 	done
