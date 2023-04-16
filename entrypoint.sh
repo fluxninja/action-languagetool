@@ -63,14 +63,16 @@ set +o noglob
 urlencode() {
 	local input="$1"
 	local output=""
-	while IFS= read -r -n1 char; do
+	local len="${#input}"
+	for ((i = 0; i < len; i++)); do
+		char="${input:$i:1}"
 		if [[ "${char}" =~ [a-zA-Z0-9\.\~\_\-] ]]; then
 			output+="${char}"
 		else
 			printf -v hex_char "%02X" "'${char}"
 			output+="%${hex_char}"
 		fi
-	done <<<"${input}"
+	done
 	echo "${output}"
 }
 
