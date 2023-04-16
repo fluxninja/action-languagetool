@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:lts-buster
 
 ENV REVIEWDOG_VERSION=v0.14.1
 ENV TMPL_VERSION=v1.2.0

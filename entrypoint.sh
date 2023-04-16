@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/bash
 set -eo pipefail
 
 echo "API ENDPOINT: ${INPUT_API_ENDPOINT}" >&2
@@ -59,6 +59,20 @@ echo "Files to check:"
 echo "${FILES}"
 
 set +o noglob
+
+urlencode() {
+	local input="$1"
+	local output=""
+	while IFS= read -r -n1 char; do
+		if [[ "${char}" =~ [a-zA-Z0-9\.\~\_\-] ]]; then
+			output+="${char}"
+		else
+			printf -v hex_char "%02X" "'${char}"
+			output+="%${hex_char}"
+		fi
+	done <<<"${input}"
+	echo "${output}"
+}
 
 urlencode() {
 	local input="$1"
