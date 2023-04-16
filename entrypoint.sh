@@ -66,13 +66,14 @@ run_langtool() {
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
 		JSON_DATA_WITH_FILE="$(echo "${JSON_DATA}" | jq ". + {\"data\": ${DATA_JSON}}")"
+		echo "Encoded: ${JSON_DATA_WITH_FILE}"
 		response=$(curl --silent \
 			--request POST \
 			--header "Content-Type: application/json" \
 			--data "${JSON_DATA_WITH_FILE}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 
-		echo "${response}"
+		echo "Response: ${response}"
 
 		# curl --silent \
 		# 	--request POST \
