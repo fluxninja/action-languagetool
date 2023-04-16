@@ -64,6 +64,7 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		TEXT_JSON=$(node annotate.js "${FILE}")
+		echo "TEXT_JSON: ${TEXT_JSON}" >&2
 		curl --silent \
 			--request POST \
 			--data "${DATA}" \
