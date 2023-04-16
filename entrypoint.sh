@@ -80,18 +80,24 @@ run_langtool() {
 		DATA_JSON=$(node annotate.js "${FILE}")
 		ENCODED_DATA_JSON=$(urlencode "${DATA_JSON}")
 		DATA_FOR_FILE="${DATA}&data=${ENCODED_DATA_JSON}"
-		response=$(curl --silent \
+		RESPONSE_JSON=$(curl --silent \
 			--request POST \
 			--data "${DATA_FOR_FILE}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
-		echo "${response}"
 
-		# curl --silent \
-		# 	--request POST \
-		# 	--data "${DATA}" \
-		# 	--data-urlencode "data=${DATA_JSON})" \
-		# 	"${INPUT_API_ENDPOINT}/v2/check" |
-		# 	FILE="${FILE}" tmpl /langtool.tmpl
+		# print response
+		echo "Response: ${RESPONSE_JSON}"
+
+		# Save the response to a temporary file
+		echo "${RESPONSE_JSON}" >response.json
+
+		# Pass the file path to tmpl
+		PARSED_RESPONSE=$(FILE="${FILE}" tmpl /langtool.tmpl -i response.json)
+
+		echo "Parsed: ${PARSED_RESPONSE}"
+
+		# Remove the temporary file
+		rm response.json
 	done
 }
 
