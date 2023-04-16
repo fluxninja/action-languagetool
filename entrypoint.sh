@@ -91,32 +91,23 @@ run_langtool() {
 }
 
 markup_to_json() {
-	local text_with_markup="$1"
-	local json_text
-	local markup_regex='<!--.*?-->|<[^>]+>'
+	local CONTENT=$1
+	local JSON_ARRAY="[]"
 
-	json_text='{"annotation":['
-
-	while [[ ${text_with_markup} =~ ${markup_regex} ]]; do
-		local markup="${BASH_REMATCH[0]}"
-		local text_part="${text_with_markup%%${markup}*}"
-		text_with_markup="${text_with_markup#*${markup}}"
-
-		json_text+='{"text": "'"${text_part//\"/\\\"}"'"},'
-		json_text+='{"markup": "'"${markup//\"/\\\"}"'"}'
-
-		if [[ -n ${text_with_markup} ]]; then
-			json_text+=','
+	while [[ $CONTENT =~ (.*?)(<[^>]+>)(.*) ]]; do
+		if [[ -n ${BASH_REMATCH[1]} ]]; then
+			JSON_ARRAY=$(jq --arg text "${BASH_REMATCH[1]}" '. += [{"text": $text}]' <<<"${JSON_ARRAY}")
 		fi
+		JSON_ARRAY=$(jq --arg markup "${BASH_REMATCH[2]}" '. += [{"markup": $markup}]' <<<"${JSON_ARRAY}")
+		CONTENT=${BASH_REMATCH[3]}
 	done
 
-	if [[ -n ${text_with_markup} ]]; then
-		json_text+='{"text": "'"${text_with_markup//\"/\\\"}"'"}'
+	if [[ -n $CONTENT ]]; then
+		JSON_ARRAY=$(jq --arg text "$CONTENT" '. += [{"text": $text}]' <<<"${JSON_ARRAY}")
 	fi
-
-	json_text+=']}'
-
-	echo "${json_text}"
+	# Create JSON data for the request
+	OUT=$(jq --argjson annotation "${JSON_ARRAY}" '{"annotation": $annotation}' <<<"{}")
+	echo "${OUT}"
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
