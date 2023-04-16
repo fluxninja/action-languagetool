@@ -80,6 +80,7 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		TEXT_JSON=$(markup_to_json "$(cat "${FILE}")")
+		echo "TEXT_JSON: ${TEXT_JSON}" >&2
 		DATA="data=${TEXT_JSON}"
 		curl --silent \
 			--request POST \
