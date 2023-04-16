@@ -60,14 +60,29 @@ echo "${FILES}"
 
 set +o noglob
 
+urlencode() {
+	local input="$1"
+	local output=""
+	while IFS= read -r -n1 char; do
+		if [[ "${char}" =~ [a-zA-Z0-9\.\~\_\-] ]]; then
+			output+="${char}"
+		else
+			printf -v hex_char "%02X" "'${char}"
+			output+="%${hex_char}"
+		fi
+	done <<<"${input}"
+	echo "${output}"
+}
+
 run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
-		DATA="${DATA}&data=${DATA_JSON}"
+		ENCODED_DATA_JSON=$(echo "${DATA_JSON}" | urlencode)
+		DATA_FOR_FILE="${DATA}&data=${ENCODED_DATA_JSON}"
 		response=$(curl --silent \
 			--request POST \
-			--data "${DATA}" \
+			--data "${DATA_FOR_FILE}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 		echo "${response}"
 
