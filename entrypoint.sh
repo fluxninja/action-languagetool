@@ -114,8 +114,6 @@ LANGTOOL_RESPONSE=$(run_langtool)
 #
 # Use reviewdog to filter the output and post review comments.
 
-echo "LANGTOOL_RESPONSE: ${LANGTOOL_RESPONSE}"
-
 echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%A%f:%l:%c: %m" \
 	-efm="%C %m" \
 	-name="LanguageTool" \
