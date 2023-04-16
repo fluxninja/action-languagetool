@@ -94,6 +94,29 @@ run_langtool() {
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
 
 LANGTOOL_RESPONSE=$(run_langtool)
-echo "Parsed responses: ${LANGTOOL_RESPONSE}"
+# example
+# testdata/text.md:3:10: Possible spelling mistake found. (MORFOLOGIK_RULE_EN_US)
+#  Suggestions: `Joe`, `joke`, `Jake`, `eke`, `AKE`, `BKE`, `Ike`, `JCE`, `JDE`, `JE`, `JKR`, `JME`, `JNE`, `JRE`, `KE`, `GKE`, `JK`
+#  Rule: https://community.languagetool.org/rule/show/MORFOLOGIK_RULE_EN_US?lang=en-US
+#  Category: TYPOS
+# testdata/text.md:3:14: Use “an” instead of ‘a’ if the following word starts with a vowel sound, e.g. ‘an article’, ‘an hour’. (EN_A_VS_AN)
+#  Suggestions: `an`
+#  URL: https://languagetool.org/insights/post/indefinite-articles/
+#  Rule: https://community.languagetool.org/rule/show/EN_A_VS_AN?lang=en-US
+#  Category: MISC
+# testdata/text.md:7:20: Possible spelling mistake found. (MORFOLOGIK_RULE_EN_US)
+#  Suggestions: `Parameter Description`
+#  Rule: https://community.languagetool.org/rule/show/MORFOLOGIK_RULE_EN_US?lang=en-US
+#  Category: TYPOS
+# testdata/text.md:17:19: There are only 28 days in February, or 29 days during leap years. Are you sure this date is correct? (TWELFTH_OF_NEVER[9])
+#  Rule: https://community.languagetool.org/rule/show/TWELFTH_OF_NEVER?lang=en-US&subId=9
+#  Category: SEMANTICS
+#
+# Use reviewdog to filter the output and post review comments.
 
-echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
+echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%f:%l:%c: %m" \
+	-name="LanguageTool" \
+	-reporter="${INPUT_REPORTER:-github-pr-check}" \
+	-level="${INPUT_LEVEL}"
+
+#echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
