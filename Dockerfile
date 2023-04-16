@@ -1,4 +1,4 @@
-FROM node:lts-buster
+FROM node:lts-alpine
 
 ENV REVIEWDOG_VERSION=v0.14.1
 ENV TMPL_VERSION=v1.2.0
@@ -8,10 +8,10 @@ ENV GHGLOB_VERSION=v2.0.2
 
 USER root
 
-SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 # hadolint ignore=DL3006
-RUN apk --no-cache add git curl jq
+RUN apk --no-cache add git curl jq bash
 
 RUN wget -O - -q https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b /usr/local/bin/ ${REVIEWDOG_VERSION} && \
   wget -O - -q https://raw.githubusercontent.com/haya14busa/tmpl/master/install.sh| sh -s -- -b /usr/local/bin/ ${TMPL_VERSION} && \
