@@ -88,10 +88,12 @@ run_langtool() {
 		PARSED_RESPONSE=$(echo "${RESPONSE_JSON}" | FILE="${FILE}" tmpl /langtool.tmpl)
 
 		echo "${PARSED_RESPONSE}"
-		echo ""
 	done
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
 
-run_langtool | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m\n" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
+LANGTOOL_RESPONSE=$(run_langtool)
+echo "Parsed responses: ${LANGTOOL_RESPONSE}"
+
+echo "${LANGTOOL_RESPONSE}" | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
