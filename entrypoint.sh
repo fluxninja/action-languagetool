@@ -65,7 +65,7 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
-		JSON_DATA_WITH_FILE="$(echo "${JSON_DATA}" | jq ". + {\"data\": \"${DATA_JSON}\"}")"
+		JSON_DATA_WITH_FILE="$(echo "${JSON_DATA}" | jq ". + {\"data\": ${DATA_JSON}}")"
 		echo "Encoded: ${JSON_DATA_WITH_FILE}"
 		response=$(curl --silent \
 			--request POST \
