@@ -1,9 +1,7 @@
-#!/bin/bash
+#!/bin/ash
 set -eo pipefail
 
-API_ENDPOINT="${INPUT_API_ENDPOINT}"
-
-echo "API ENDPOINT: ${API_ENDPOINT}" >&2
+echo "API ENDPOINT: ${INPUT_API_ENDPOINT}" >&2
 
 if [ -n "${GITHUB_WORKSPACE}" ]; then
 	cd "${GITHUB_WORKSPACE}" || exit
@@ -38,15 +36,6 @@ fi
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob
 
-if [ -n "${INPUT_SPELLING_FILE}" ]; then
-	echo "Word count of ${INPUT_SPELLING_FILE}: $(wc -w <"${INPUT_SPELLING_FILE}")" >&2
-	spelling_file_path="/LanguageTool/org/languagetool/resource/en/hunspell/spelling.txt"
-	echo "Word count of ${spelling_file_path}: $(wc -w <"${spelling_file_path}")" >&2
-	echo "" >>"${spelling_file_path}"
-	cat "${INPUT_SPELLING_FILE}" >>"${spelling_file_path}"
-	echo "Word count of ${spelling_file_path}: $(wc -w <"${spelling_file_path}")" >&2
-fi
-
 if [ "${INPUT_FILTER_MODE}" = "changed" ]; then
 	PR_NUMBER=$(echo "${GITHUB_REF}" | awk -F / '{print $3}')
 	PAGE=1
@@ -79,7 +68,7 @@ run_langtool() {
 			--request POST \
 			--data "${DATA}" \
 			--data-urlencode "text=${TEXT_JSON})" \
-			"${API_ENDPOINT}/v2/check" |
+			"${INPUT_API_ENDPOINT}/v2/check" |
 			FILE="${FILE}" tmpl /langtool.tmpl
 	done
 }
