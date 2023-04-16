@@ -94,7 +94,7 @@ markup_to_json() {
 	local CONTENT=$1
 	local JSON_ARRAY="[]"
 
-	while [[ $CONTENT =~ (.*?)(<[^>]+>)(.*) ]]; do
+	while [[ $CONTENT =~ (.*?)(<[^>]+(?:\/>|[\s\S]*?<\/[^>]+>))(.*) ]]; do
 		if [[ -n ${BASH_REMATCH[1]} ]]; then
 			JSON_ARRAY=$(jq --arg text "${BASH_REMATCH[1]}" '. += [{"text": $text}]' <<<"${JSON_ARRAY}")
 		fi
@@ -109,7 +109,6 @@ markup_to_json() {
 	# Create JSON data for the request
 	OUT=$(jq --argjson annotation "${JSON_ARRAY}" '{"annotation": $annotation}' <<<"{}")
 	echo "${OUT}"
-
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
