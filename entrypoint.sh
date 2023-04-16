@@ -88,6 +88,7 @@ run_langtool() {
 		PARSED_RESPONSE=$(echo "${RESPONSE_JSON}" | FILE="${FILE}" tmpl /langtool.tmpl)
 
 		echo "${PARSED_RESPONSE}"
+		echo ""
 	done
 }
 
