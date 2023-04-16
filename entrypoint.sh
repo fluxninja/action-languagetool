@@ -53,6 +53,10 @@ else
 	FILES="$(git ls-files | ghglob "${INPUT_PATTERNS}")"
 fi
 
+# echo list of files to check
+echo "Files to check:"
+echo "${FILES}"
+
 set +o noglob
 
 run_langtool() {
