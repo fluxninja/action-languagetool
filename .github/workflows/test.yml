@@ -37,8 +37,8 @@ jobs:
       - uses: ./
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          level: picky
+          reporter: github-pr-check
+          level: error
           patterns: "**.md"
           custom_api_endpoint: ${{ secrets.LANGTOOL_HTTP_URI }}
           username: ${{ secrets.LANGTOOL_USERNAME }}
