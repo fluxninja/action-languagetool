@@ -93,8 +93,7 @@ run_langtool() {
 markup_to_json() {
 	local CONTENT=$1
 	local JSON_ARRAY="[]"
-
-	while [[ $CONTENT =~ (.*?)(<[^>]*>)(.*) ]]; do
+	while [[ $CONTENT =~ (.*?)(<[^>]+>|<\/[^>]+>)(.*) ]]; do
 		if [[ -n ${BASH_REMATCH[1]} ]]; then
 			JSON_ARRAY=$(jq --arg text "${BASH_REMATCH[1]}" '. += [{"text": $text}]' <<<"${JSON_ARRAY}")
 		fi
