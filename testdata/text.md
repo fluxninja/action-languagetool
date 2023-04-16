@@ -4,7 +4,8 @@
 
 <!-- vale off -->
 
-<a id="policy"></a> <ParameterDescription
+<a id="policy"></a>
+<ParameterDescription
     name="policy"
     type="
 Object (rollout_policy)"
