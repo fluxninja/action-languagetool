@@ -92,14 +92,14 @@ run_langtool() {
 markup_to_json() {
 	local text_with_markup="$1"
 	local json_text
-	local markup_regex='<[^>]+>'
+	local markup_regex='<!--.*?-->|<[^>]+>'
 
 	json_text='{"annotation":['
 
 	while [[ ${text_with_markup} =~ ${markup_regex} ]]; do
 		local markup="${BASH_REMATCH[0]}"
-		local text_part="${text_with_markup%%"${markup}"*}"
-		text_with_markup="${text_with_markup#*"${markup}"}"
+		local text_part="${text_with_markup%%${markup}*}"
+		text_with_markup="${text_with_markup#*${markup}}"
 
 		json_text+='{"text": "'"${text_part//\"/\\\"}"'"},'
 		json_text+='{"markup": "'"${markup//\"/\\\"}"'"}'

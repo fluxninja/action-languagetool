@@ -38,6 +38,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
+          filter_mode: all
           level: error
           patterns: "**.md"
           custom_api_endpoint: ${{ secrets.LANGTOOL_HTTP_URI }}
