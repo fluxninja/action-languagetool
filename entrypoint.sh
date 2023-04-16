@@ -64,15 +64,26 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
 		DATA_JSON=$(node annotate.js "${FILE}")
-		DATA="$DATA&data=${DATA_JSON}"
-		curl --silent \
+		#DATA="$DATA&data=${DATA_JSON}"
+		response=$(curl --silent \
 			--request POST \
 			--data "${DATA}" \
-			"${INPUT_API_ENDPOINT}/v2/check" |
-			FILE="${FILE}" tmpl /langtool.tmpl
+			--data-urlencode "data=${DATA_JSON}" \
+			"${INPUT_API_ENDPOINT}/v2/check")
+
+		echo "${response}"
+
+		# curl --silent \
+		# 	--request POST \
+		# 	--data "${DATA}" \
+		# 	--data-urlencode "data=${DATA_JSON})" \
+		# 	"${INPUT_API_ENDPOINT}/v2/check" |
+		# 	FILE="${FILE}" tmpl /langtool.tmpl
 	done
 }
 
 export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
 
-run_langtool | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
+run_langtool
+
+# run_langtool | reviewdog -efm="%A%f:%l:%c: %m" -efm="%C %m" -name="LanguageTool" -reporter="${INPUT_REPORTER:-github-pr-check}" -level="${INPUT_LEVEL}"
