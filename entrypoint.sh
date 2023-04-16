@@ -92,30 +92,29 @@ run_langtool() {
 
 markup_to_json() {
 	local text_with_markup="$1"
-	local json_text
 	local markup_regex='<[^>]+>'
 
-	json_text='{"annotation":['
+	# Initialize the JSON array
+	local json_text="$(jq -n '[]')"
 
 	while [[ ${text_with_markup} =~ ${markup_regex} ]]; do
 		local markup="${BASH_REMATCH[0]}"
 		local text_part="${text_with_markup%%"${markup}"*}"
 		text_with_markup="${text_with_markup#*"${markup}"}"
 
-		json_text+='{"text": "'"${text_part//\"/\\\"}"'"},'
-		json_text+='{"markup": "'"${markup//\"/\\\"}"'"}'
+		# Add the text part to the JSON array
+		json_text="$(jq --arg text "${text_part}" '. += [{"text": $text}]' <<<"${json_text}")"
 
-		if [[ -n ${text_with_markup} ]]; then
-			json_text+=','
-		fi
+		# Add the markup part to the JSON array
+		json_text="$(jq --arg markup "${markup}" '. += [{"markup": $markup}]' <<<"${json_text}")"
 	done
 
+	# Add the remaining text part (if any) to the JSON array
 	if [[ -n ${text_with_markup} ]]; then
-		json_text+='{"text": "'"${text_with_markup//\"/\\\"}"'"}'
+		json_text="$(jq --arg text "${text_with_markup}" '. += [{"text": $text}]' <<<"${json_text}")"
 	fi
 
-	json_text+=']}'
-
+	# Output the final JSON
 	echo "${json_text}"
 }
 
