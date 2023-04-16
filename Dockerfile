@@ -8,7 +8,7 @@ ENV GHGLOB_VERSION=v2.0.2
 
 USER root
 
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 # hadolint ignore=DL3006
 RUN apk --no-cache add git curl jq
