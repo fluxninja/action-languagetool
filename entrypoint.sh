@@ -63,11 +63,11 @@ set +o noglob
 run_langtool() {
 	for FILE in ${FILES}; do
 		echo "Checking ${FILE}..." >&2
-		TEXT_JSON=$(node annotate.js "${FILE}")
-		DATA="$DATA&data=${TEXT_JSON}"
+		DATA_JSON=$(node annotate.js "${FILE}")
 		curl --silent \
 			--request POST \
 			--data "${DATA}" \
+			--data-urlencode "data=${DATA_JSON})" \
 			"${INPUT_API_ENDPOINT}/v2/check" |
 			FILE="${FILE}" tmpl /langtool.tmpl
 	done
