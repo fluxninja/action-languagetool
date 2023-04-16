@@ -87,9 +87,6 @@ run_langtool() {
 		# Pass the file path to tmpl
 		PARSED_RESPONSE=$(echo "${RESPONSE_JSON}" | FILE="${FILE}" tmpl /langtool.tmpl)
 
-		# Remove the temporary file
-		rm response.json
-
 		echo "${PARSED_RESPONSE}"
 	done
 }
