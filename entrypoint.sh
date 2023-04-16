@@ -70,13 +70,6 @@ run_langtool() {
 			--data "${DATA}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 		echo "${response}"
-
-		# curl --silent \
-		# 	--request POST \
-		# 	--data "${DATA}" \
-		# 	--data-urlencode "data=${DATA_JSON})" \
-		# 	"${INPUT_API_ENDPOINT}/v2/check" |
-		# 	FILE="${FILE}" tmpl /langtool.tmpl
 	done
 }
 
