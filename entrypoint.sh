@@ -14,7 +14,7 @@ if [ -n "${GITHUB_WORKSPACE}" ]; then
 	cd "${GITHUB_WORKSPACE}" || exit
 fi
 
-git config --global --add safe.directory $GITHUB_WORKSPACE
+git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
 # https://languagetool.org/http-api/swagger-ui/#!/default/post_check
 DATA="language=${INPUT_LANGUAGE}"
@@ -42,7 +42,7 @@ fi
 
 # Disable glob to handle glob patterns with ghglob command instead of with shell.
 set -o noglob
-FILES="$(git ls-files | ghglob ${INPUT_PATTERNS})"
+FILES="$(git ls-files | ghglob "${INPUT_PATTERNS}")"
 set +o noglob
 
 run_langtool() {
