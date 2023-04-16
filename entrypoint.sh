@@ -97,7 +97,7 @@ markup_to_json() {
 
 	json_text='{"annotation":['
 
-	while [[ ${text_with_markup} =~ $markup_regex ]]; do
+	while [[ ${text_with_markup} =~ ${markup_regex} ]]; do
 		local markup="${BASH_REMATCH[0]}"
 		local text_part="${text_with_markup%%"${markup}"*}"
 		text_with_markup="${text_with_markup#*"${markup}"}"
