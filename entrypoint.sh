@@ -63,10 +63,10 @@ set +o noglob
 run_langtool() {
 	for FILE in ${FILES}; do
 		DATA_JSON=$(node /annotate.js "${FILE}")
+		DATA_FOR_FILE="${DATA}&data=${DATA_JSON}"
 		RESPONSE_JSON=$(curl --silent \
 			--request POST \
-			--data "${DATA}" \
-			--data-urlencode "data=${DATA_JSON}" \
+			--data "${DATA_FOR_FILE}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 
 		# Pass the file path to tmpl
