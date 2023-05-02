@@ -78,10 +78,11 @@ run_langtool() {
 	for FILE in ${FILES}; do
 		DATA_JSON=$(node /annotate.js "${FILE}")
 		ENCODED_DATA_JSON=$(urlencode "${DATA_JSON}")
-		DATA_FOR_FILE="${DATA}&data=${ENCODED_DATA_JSON}"
+		#DATA_FOR_FILE="${DATA}&data=${ENCODED_DATA_JSON}"
 		RESPONSE_JSON=$(curl --silent \
 			--request POST \
-			--data "${DATA_FOR_FILE}" \
+			--data "${DATA}" \
+			--data-urlencode "data=${ENCODED_DATA_JSON}" \
 			"${INPUT_API_ENDPOINT}/v2/check")
 
 		# Pass the file path to tmpl
