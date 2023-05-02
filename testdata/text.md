@@ -14,6 +14,10 @@ Object (rollout_policy)"
 
 <!-- vale on -->
 
+## Policy
+
+[_Test Link_](#policy) to the policy.
+
 I will meet you on February 30th.
 
 It doesn't works on an unix environment.
