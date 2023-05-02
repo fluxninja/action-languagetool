@@ -10,9 +10,6 @@
   "author": "Your Name",
   "license": "ISC",
   "dependencies": {
-    "annotatedtext-remark": "^1.0.7",
-    "remark-gfm": "^3.0.1",
-    "remark-parse": "^10.0.1",
-    "unified": "^10.1.2"
+    "annotatedtext-remark": "^1.0.7"
   }
 }
