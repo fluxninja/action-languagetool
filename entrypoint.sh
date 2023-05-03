@@ -37,7 +37,11 @@ fi
 set -o noglob
 
 if [ "${INPUT_FILTER_FILES}" = "changed" ]; then
-	PR_NUMBER=$(echo "${GITHUB_REF}" | awk -F / '{print $3}')
+	if [[ "${GITHUB_REF}" =~ ^refs/pull/ ]]; then
+		PR_NUMBER=$(echo "${GITHUB_REF}" | awk -F / '{print $3}')
+	else
+		PR_NUMBER=$(jq -r ".pull_request.number" "$GITHUB_EVENT_PATH")
+	fi
 	PAGE=1
 	FILES=""
 	while :; do
